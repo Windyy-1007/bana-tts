@@ -66,7 +66,7 @@ def infer(text, generator, dct):
     return y_dec
 
 generator, dct = load_acoustic_model('./TTS/logs/bahnar_exp/grad_1344.pt', './TTS/data/bahnar_lexicon.txt')
-generator_fm, dct_fm = load_acoustic_model('./TTS/logs/bahnar_female_exp/grad_1250.pt', './TTS/data/bahnar_lexicon.txt')
+generator_fm, dct_fm = load_acoustic_model('./TTS/logs/bahnar_female_exp/grad_1264.pt', './TTS/data/bahnar_lexicon.txt')
 
 hifigan = load_vocoder('./TTS/checkpts/hifigan.pt', './TTS/checkpts/hifigan-config.json')
 output_sampling_rate = 22050
