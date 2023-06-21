@@ -11,3 +11,4 @@ IPython
 vietnam_number
 flask
 gunicorn==20.1.0
+praat-parselmouth==0.4.3
