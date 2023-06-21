@@ -61,7 +61,7 @@ def infer(text, generator, dct):
 
     _, y_dec, _ = generator.forward(x, x_lengths, n_timesteps=50, temperature=1.3,
                                         stoc=False, spk=None,
-                                        length_scale=0.91)
+                                        length_scale=1.5)
 
     return y_dec
 
