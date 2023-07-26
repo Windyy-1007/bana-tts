@@ -99,14 +99,67 @@ hifigan = load_vocoder(
 class AudioConfig:
     def __init__(self):
         self.output_sampling_rate = 22050
-        self.female = {
-            "pitch_min": 75,
-            "pitch_max": 600,
-            "formant_shift_ratio": 1.2,
-            "new_pitch_median": 199.0,
-            "pitch_range_factor": 1.1,
-            "duration_factor": 1.0
+        
+        self._female = {
+            "binhdinh": {
+                "pitch_min": 75,
+                "pitch_max": 600,
+                "formant_shift_ratio": 1.27,
+                "new_pitch_median": 196.0,
+                "pitch_range_factor": 1.27,
+                "duration_factor": 1.0
+            },
+            "gialai": {
+                "pitch_min": 75,
+                "pitch_max": 600,
+                "formant_shift_ratio": 1.03,
+                "new_pitch_median": 212.0,
+                "pitch_range_factor": 1.03,
+                "duration_factor": 1.0
+            },
+            "kontum": {
+                "pitch_min": 75,
+                "pitch_max": 600,
+                "formant_shift_ratio": 1.2,
+                "new_pitch_median": 199.0,
+                "pitch_range_factor": 1.1,
+                "duration_factor": 1.0
+            }
         }
+        self._male = {
+            "binhdinh": {
+                "pitch_min": 75,
+                "pitch_max": 600,
+                "formant_shift_ratio": 1.0,
+                "new_pitch_median": 0.0,
+                "pitch_range_factor": 1.0,
+                "duration_factor": 1.0
+            },
+            "gialai": {
+                "pitch_min": 75,
+                "pitch_max": 600,
+                "formant_shift_ratio": 1.0,
+                "new_pitch_median": 180.0,
+                "pitch_range_factor": 1.15,
+                "duration_factor": 1.0
+            },
+            "kontum": {
+                "pitch_min": 75,
+                "pitch_max": 600,
+                "formant_shift_ratio": 1.06,
+                "new_pitch_median": 216.0,
+                "pitch_range_factor": 1.09,
+                "duration_factor": 1.0
+            }
+        }
+        
+    def get_config(self, gender="male", region="binhdinh"):
+        if gender == "male":
+            return self._male[region]
+        elif gener == "female":
+            return self._female[region]
+        else:
+            raise NotImplementedError
 
 if __name__ == "__main__":
     input_text = text = "trong glong tôjroh ameêm teh ñak"
