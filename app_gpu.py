@@ -14,8 +14,8 @@ headers = {
 @app.route('/speak', methods=['POST'])
 def speak():
     payload = json.dumps({
-          "text": request.get_json()["text"]
-          "gender": request.get_json()["gender"]
+          "text": request.get_json()["text"],
+          "gender": request.get_json()["gender"],
           "region": request.get_json()["region"]
           })
     response = requests.request("POST", url, headers=headers, data=payload)
