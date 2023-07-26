@@ -156,7 +156,7 @@ class AudioConfig:
     def get_config(self, gender="male", region="binhdinh"):
         if gender == "male":
             return self._male[region]
-        elif gener == "female":
+        elif gender == "female":
             return self._female[region]
         else:
             raise NotImplementedError
