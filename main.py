@@ -104,25 +104,25 @@ class AudioConfig:
             "binhdinh": {
                 "pitch_min": 75,
                 "pitch_max": 600,
-                "formant_shift_ratio": 1.27,
-                "new_pitch_median": 196.0,
-                "pitch_range_factor": 1.27,
+                "formant_shift_ratio": 1.2625,
+                "new_pitch_median": 210.0,
+                "pitch_range_factor": 1.15,
                 "duration_factor": 1.0
             },
             "gialai": {
                 "pitch_min": 75,
                 "pitch_max": 600,
-                "formant_shift_ratio": 1.03,
-                "new_pitch_median": 212.0,
-                "pitch_range_factor": 1.03,
+                "formant_shift_ratio": 1.0375,
+                "new_pitch_median": 215.0,
+                "pitch_range_factor": 1.0375,
                 "duration_factor": 1.0
             },
             "kontum": {
                 "pitch_min": 75,
                 "pitch_max": 600,
-                "formant_shift_ratio": 1.2,
-                "new_pitch_median": 199.0,
-                "pitch_range_factor": 1.1,
+                "formant_shift_ratio": 1.075,
+                "new_pitch_median": 215.0,
+                "pitch_range_factor": 1.0,
                 "duration_factor": 1.0
             }
         }
@@ -139,15 +139,15 @@ class AudioConfig:
                 "pitch_min": 75,
                 "pitch_max": 600,
                 "formant_shift_ratio": 1.0,
-                "new_pitch_median": 180.0,
-                "pitch_range_factor": 1.15,
+                "new_pitch_median": 190.0,
+                "pitch_range_factor": 1.1875,
                 "duration_factor": 1.0
             },
             "kontum": {
                 "pitch_min": 75,
                 "pitch_max": 600,
-                "formant_shift_ratio": 1.06,
-                "new_pitch_median": 216.0,
+                "formant_shift_ratio": 1.0,
+                "new_pitch_median": 185.0,
                 "pitch_range_factor": 1.09,
                 "duration_factor": 1.0
             }
