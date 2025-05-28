@@ -3,3 +3,5 @@ __pycache__
 .vscode
 *.pt
 .DS_Store
+venv/
+venv/Lib

@@ -1,6 +1,6 @@
 """ from https://github.com/keithito/tacotron """
 
-from TTS.text import bndict
+from text import bndict
 
 # _pad        = '_'
 # _punctuation = '!\'(),.:;? '

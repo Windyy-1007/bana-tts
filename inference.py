@@ -58,7 +58,11 @@ if __name__ == '__main__':
     with open(HIFIGAN_CONFIG) as f:
         h = AttrDict(json.load(f))
     vocoder = HiFiGAN(h)
-    vocoder.load_state_dict(torch.load(HIFIGAN_CHECKPT, map_location=lambda loc, storage: loc)['generator'])
+    ckpt = torch.load(HIFIGAN_CHECKPT, map_location=lambda loc, storage: loc)
+    if 'generator' in ckpt:
+        vocoder.load_state_dict(ckpt['generator'])
+    else:
+        vocoder.load_state_dict(ckpt)
     _ = vocoder.eval()
     vocoder.remove_weight_norm()
     
