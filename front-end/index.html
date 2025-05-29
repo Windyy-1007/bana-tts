@@ -18,8 +18,14 @@
   </div>
   <div class="main-columns">
     <div class="left-col">
+      <div class="nav-bar-group">
+        <div class="func-nav">
+          <button class="func-nav-btn active" id="nav-text-btn" onclick="switchFuncTab('text')">Text</button>
+          <button class="func-nav-btn" id="nav-picture-btn" onclick="switchFuncTab('picture')">Picture</button>
+        </div>
+      </div>
       <div class="center-group">
-        <div class="tts-card">
+        <div class="tts-card" id="text-func-group">
           <label class="tts-label" id="text-label" for="text">Enter text here</label>
           <textarea id="text" placeholder="Enter text here" oninput="autoGrow(this)"></textarea>
           <div class="btn-group">
@@ -27,183 +33,30 @@
               <span id="speak-btn-text">Speak</span>
             </button>
             <label class="tts-btn" style="padding: 0 18px; cursor: pointer;">
-              <input type="file" id="file-upload" accept=".txt" style="display:none" onchange="uploadTextFile(event)">
+              <input type="file" id="file-upload" accept=".txt,.docx" style="display:none" onchange="uploadTextFile(event)">
               <span id="upload-btn-text">Upload Text File</span>
             </label>
+            <span style="align-self:center; margin-left:8px; color:#2563eb; font-size:0.98em;">
+              .txt, .docx
+            </span>
           </div>
           <audio id="audio"></audio>
+        </div>
+        <div class="tts-card" id="picture-func-group" style="display:none;">
+          <div style="color:#888; text-align:center; width:100%; padding:40px 0;">
+            Picture-to-speech coming soon...
+          </div>
         </div>
       </div>
     </div>
     <div class="right-col">
       <div class="history-card">
-        <div class="history-title">History</div>
+        <div class="history-title" id="history-title">History</div>
         <div id="history-list"></div>
       </div>
     </div>
   </div>
-  <script>
-    // Caching
-    let lastText = '';
-    let lastAudioUrl = '';
-    let isLoading = false;
-    // Language dictionary
-    const dict = {
-      en: {
-        title: "Bahnar Text-To-Speech",
-        enterText: "Enter text here",
-        speak: "Speak",
-        upload: "Upload Text File"
-      },
-      vi: {
-        title: "Chuyển Văn Bản Thành Giọng Nói Bahnar",
-        enterText: "Nhập văn bản tại đây",
-        speak: "Đọc",
-        upload: "Tải tệp văn bản"
-      }
-    };
-    let currentLang = 'en';
-
-    function setLang(lang) {
-      currentLang = lang;
-      document.getElementById('app-title').innerText = dict[lang].title;
-      document.getElementById('text-label').innerText = dict[lang].enterText;
-      document.getElementById('text').placeholder = dict[lang].enterText;
-      document.getElementById('speak-btn-text').innerText = dict[lang].speak;
-      document.getElementById('upload-btn-text').innerText = dict[lang].upload;
-      document.documentElement.lang = lang;
-    }
-    function changeLang() {
-      const lang = document.getElementById('lang-select').value;
-      setLang(lang);
-    }
-    // Initial language
-    setLang('en');
-
-    async function speak() {
-      if (isLoading) return;
-      const text = document.getElementById('text').value.trim();
-      if (!text) return;
-      const audioElem = document.getElementById('audio');
-      // If same text, replay cached audio
-      if (text === lastText && lastAudioUrl) {
-        audioElem.src = lastAudioUrl;
-        audioElem.currentTime = 0;
-        audioElem.play();
-        addToHistory(text, lastAudioUrl);
-        return;
-      }
-      isLoading = true;
-      setSpeakLoading(true);
-      const gender = "male";
-      try {
-        const response = await fetch('http://localhost:5000/speak', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text, gender })
-        });
-        const data = await response.json();
-        const audioData = data.speech;
-        const binary = atob(audioData);
-        const array = new Uint8Array(binary.length);
-        for (let i = 0; i < binary.length; i++) {
-          array[i] = binary.charCodeAt(i);
-        }
-        const blob = new Blob([array], { type: 'audio/wav' });
-        const url = URL.createObjectURL(blob);
-        audioElem.src = url;
-        audioElem.currentTime = 0;
-        audioElem.play();
-        // Cache
-        lastText = text;
-        lastAudioUrl = url;
-        addToHistory(text, url);
-      } catch (e) {
-        lastText = '';
-        lastAudioUrl = '';
-        alert('Error generating speech.');
-      }
-      setSpeakLoading(false);
-      isLoading = false;
-    }
-
-    function setSpeakLoading(loading) {
-      const btn = document.getElementById('speak-btn');
-      const btnText = document.getElementById('speak-btn-text');
-      if (loading) {
-        btn.setAttribute('disabled', 'disabled');
-        btnText.innerHTML = '<span class="spinner"></span>';
-      } else {
-        btn.removeAttribute('disabled');
-        btnText.innerText = dict[currentLang].speak;
-      }
-    }
-
-    function uploadTextFile(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      if (file.type !== "text/plain") {
-        alert('Please upload a .txt file.');
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        document.getElementById('text').value = e.target.result;
-      };
-      reader.readAsText(file, 'UTF-8');
-      // Reset file input so same file can be uploaded again if needed
-      event.target.value = '';
-    }
-
-    function autoGrow(element) {
-      element.style.height = "auto";
-      element.style.height = (element.scrollHeight) + "px";
-    }
-
-    // History logic
-    let history = [];
-    function addToHistory(text, audioUrl) {
-      // Remove any previous entry with the same text
-      history = history.filter(item => item.text !== text);
-      // Add new entry to the top
-      history.unshift({ text, audioUrl, time: new Date().toLocaleTimeString() });
-      if (history.length > 20) history.pop();
-      renderHistory();
-    }
-    function renderHistory() {
-      const list = document.getElementById('history-list');
-      list.innerHTML = '';
-      history.forEach((item, idx) => {
-        const div = document.createElement('div');
-        div.className = 'history-item';
-        const textDiv = document.createElement('div');
-        textDiv.className = 'history-text';
-        textDiv.textContent = item.text.length > 80 ? item.text.slice(0, 80) + '...' : item.text;
-        const controls = document.createElement('div');
-        controls.className = 'history-controls';
-        // Play icon
-        const playBtn = document.createElement('button');
-        playBtn.className = 'icon-btn';
-        playBtn.title = 'Play';
-        playBtn.innerHTML = '<svg width="22" height="22" viewBox="0 0 22 22"><polygon points="6,4 18,11 6,18" fill="#2563eb"/></svg>';
-        playBtn.onclick = () => {
-          const audio = new Audio(item.audioUrl);
-          audio.play();
-        };
-        // Download icon
-        const downloadBtn = document.createElement('a');
-        downloadBtn.className = 'icon-btn';
-        downloadBtn.title = 'Download';
-        downloadBtn.innerHTML = '<svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 4v9m0 0l-4-4m4 4l4-4M4 18h14" stroke="#2563eb" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-        downloadBtn.href = item.audioUrl;
-        downloadBtn.download = 'tts.wav';
-        controls.appendChild(playBtn);
-        controls.appendChild(downloadBtn);
-        div.appendChild(textDiv);
-        div.appendChild(controls);
-        list.appendChild(div);
-      });
-    }
-  </script>
+  <script src="mammoth.browser.min.js"></script>
+  <script src="main.js"></script>
 </body>
 </html>

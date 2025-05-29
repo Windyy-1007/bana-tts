@@ -188,6 +188,7 @@ body {
 }
 .center-group {
   padding-top: 0 !important;
+  margin-top: 0;
   height: auto;
   min-height: unset;
   width: 100%;
@@ -262,6 +263,51 @@ body {
 }
 .icon-btn svg {
   display: block;
+}
+.nav-bar-group {
+  width: 100%;
+  margin-bottom: 28px;
+  padding: 0 0 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+.func-nav {
+  display: flex;
+  gap: 0;
+  width: 100%;
+  border-bottom: 1.5px solid #e5e7eb;
+  background: #f8fafc;
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 0;
+  height: 54px;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.06);
+}
+.func-nav-btn {
+  flex: 1;
+  padding: 0;
+  height: 54px;
+  background: none;
+  border: none;
+  font-size: 1.13rem;
+  font-weight: 600;
+  color: #2563eb;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s;
+  outline: none;
+  background: #f8fafc;
+  border-bottom: 3px solid transparent;
+  position: relative;
+}
+.func-nav-btn.active, .func-nav-btn:focus {
+  background: #f8fafc;
+  color: #2563eb;
+  border-bottom: 3px solid #2563eb;
+}
+.func-nav-btn:not(:last-child) {
+  border-right: 1.5px solid #e5e7eb;
 }
 @media (max-width: 900px) {
   .headbar-bg {
