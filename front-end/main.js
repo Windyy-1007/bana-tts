@@ -9,14 +9,18 @@ const dict = {
     enterText: "Enter text here",
     speak: "Speak",
     upload: "Upload Text File",
-    history: "History"
+    history: "History",
+    navText: "Text-to-speech",
+    navPicture: "Image-to-speech"
   },
   vi: {
     title: "Chuyển Văn Bản Thành Giọng Nói Bahnar",
     enterText: "Nhập văn bản tại đây",
     speak: "Đọc",
     upload: "Tải tệp văn bản",
-    history: "Lịch sử"
+    history: "Lịch sử",
+    navText: "Chuyển văn bản thành giọng nói",
+    navPicture: "Chuyển ảnh thành giọng nói"
   }
 };
 let currentLang = 'en';
@@ -29,6 +33,8 @@ function setLang(lang) {
   document.getElementById('speak-btn-text').innerText = dict[lang].speak;
   document.getElementById('upload-btn-text').innerText = dict[lang].upload;
   document.getElementById('history-title').innerText = dict[lang].history;
+  document.getElementById('nav-text-label').innerText = dict[lang].navText;
+  document.getElementById('nav-picture-label').innerText = dict[lang].navPicture;
   document.documentElement.lang = lang;
 }
 function changeLang() {

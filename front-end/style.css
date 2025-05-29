@@ -326,6 +326,50 @@ body {
   margin-top: 0;
   font-weight: 400;
 }
+.image-drop-area {
+  width: 100%;
+  min-height: 160px;
+  border: 2px dashed #2563eb;
+  border-radius: 16px;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+  transition: border-color 0.2s, background 0.2s;
+  cursor: pointer;
+  position: relative;
+}
+.image-drop-area.dragover {
+  border-color: #1d4ed8;
+  background: #e0e7ff;
+}
+.image-drop-icon {
+  font-size: 3.2rem;
+  color: #2563eb;
+  margin-bottom: 8px;
+}
+.image-drop-msg {
+  color: #2563eb;
+  font-size: 1.08rem;
+  text-align: center;
+}
+.ocr-result {
+  width: 100%;
+  min-height: 70px;
+  max-height: 30vh;
+  border-radius: 12px;
+  border: 1.5px solid #2563eb;
+  background: #f3f6fd;
+  color: #222;
+  font-size: 1.08rem;
+  margin-bottom: 18px;
+  padding: 12px;
+  resize: none;
+  outline: none;
+  box-shadow: 0 1px 4px rgba(37,99,235,0.04);
+}
 @media (max-width: 900px) {
   .headbar-bg {
     width: 70vw;
