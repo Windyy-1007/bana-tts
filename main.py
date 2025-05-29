@@ -4,15 +4,15 @@ import soundfile as sf
 import torch
 
 # For Grad-TTS
-import TTS.params as params
-from TTS.model import GradTTS
-from TTS.praat_utils import change_gender
-from TTS.text import text_to_sequence, bndict
-from TTS.text.symbols import symbols
-from TTS.utils import intersperse
+import params as params
+from model import GradTTS
+from praat_utils import change_gender
+from text import text_to_sequence, bndict
+from text.symbols import symbols
+from utils import intersperse
 
 # For HiFi-GAN
-sys.path.append('./TTS/hifi-gan/')
+sys.path.append('./hifi-gan/')
 from env import AttrDict
 from models import Generator as HiFiGAN
 
@@ -85,7 +85,7 @@ def infer(text, generator, dct):
 
 
 generator, dct = load_acoustic_model(
-    "./TTS/logs/bahnar_exp/grad_1344.pt", "./TTS/data/bahnar_lexicon.txt"
+    "./checkpts/grad/grad_1344.pt", "./data/bahnar_lexicon.txt"
 )
 
 # generator_fm, dct_fm = load_acoustic_model(
@@ -93,7 +93,7 @@ generator, dct = load_acoustic_model(
 # )
 
 hifigan = load_vocoder(
-    "./TTS/checkpts/hifigan.pt", "./TTS/checkpts/hifigan-config.json"
+    "./checkpts/hifigan.pt", "./checkpts/hifigan-config.json"
 )
 
 class AudioConfig:

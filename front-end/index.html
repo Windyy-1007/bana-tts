@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Text to Speech Demo</title>
+</head>
+<body>
+  <h1>Text to Speech</h1>
+  <textarea id="text" rows="4" cols="50" placeholder="Enter text here"></textarea><br>
+  <button onclick="speak()">Speak</button>
+  <audio id="audio" controls></audio>
+  <script>
+    async function speak() {
+      const text = document.getElementById('text').value;
+      const gender = "male";
+      const response = await fetch('http://localhost:5000/speak', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, gender })
+      });
+      const data = await response.json();
+      const audioData = data.speech;
+      const binary = atob(audioData);
+      const array = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) {
+        array[i] = binary.charCodeAt(i);
+      }
+      const blob = new Blob([array], { type: 'audio/wav' });
+      const url = URL.createObjectURL(blob);
+      document.getElementById('audio').src = url;
+    }
+  </script>
+</body>
+</html>

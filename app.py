@@ -1,4 +1,5 @@
-from main import generator, generator_fm, dct, dct_fm, hifigan, infer, output_sampling_rate
+# from main import generator, generator_fm, dct, dct_fm, hifigan, infer, output_sampling_rate
+from main import generator, dct, hifigan, infer, AudioConfig
 from io import StringIO
 from flask import Flask, make_response, request
 import io
@@ -7,8 +8,11 @@ import base64
 import torch
 from flask_cors import CORS
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="front-end")
 CORS(app)
+
+config = AudioConfig()
+output_sampling_rate = config.output_sampling_rate
 
 def make_audio(y):
     with torch.no_grad():
@@ -37,17 +41,25 @@ def speak():
     if gender == "male":
         y = infer(input_text, generator, dct)
     elif gender == "female":
-        y = infer(input_text, generator_fm, dct_fm)
+        # y = infer(input_text, generator_fm, dct_fm)
+        y = infer(input_text, generator, dct)
     else:
         y = infer(input_text, generator, dct)
-        y_fm = infer(input_text, generator_fm, dct_fm)
+        # y_fm = infer(input_text, generator_fm, dct_fm)
         
     audio_data = make_audio(y)
     
     if gender == "both":
-        audio_data_fm = make_audio(y_fm)
+        audio_data_fm = make_audio(y)
         response = make_response({"speech": audio_data, "speech_fm": audio_data_fm})
         return response
 
     response = make_response({"speech": audio_data})
     return response
+
+@app.route('/')
+def index():
+    return app.send_static_file('index.html')
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000, debug=True)
