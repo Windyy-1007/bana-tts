@@ -309,6 +309,23 @@ body {
 .func-nav-btn:not(:last-child) {
   border-right: 1.5px solid #e5e7eb;
 }
+.credit-info {
+  margin-top: 18px;
+  text-align: center;
+  width: 100%;
+}
+.credit-main {
+  color: #888;
+  font-size: 0.98em;
+  margin-bottom: 2px;
+  font-weight: 500;
+}
+.credit-desc {
+  color: #bbb;
+  font-size: 0.90em;
+  margin-top: 0;
+  font-weight: 400;
+}
 @media (max-width: 900px) {
   .headbar-bg {
     width: 70vw;
