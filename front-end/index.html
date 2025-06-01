@@ -1,33 +1,84 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Text to Speech Demo</title>
+  <title>Bahnar Text-To-Speech</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 </head>
 <body>
-  <h1>Text to Speech</h1>
-  <textarea id="text" rows="4" cols="50" placeholder="Enter text here"></textarea><br>
-  <button onclick="speak()">Speak</button>
-  <audio id="audio" controls></audio>
-  <script>
-    async function speak() {
-      const text = document.getElementById('text').value;
-      const gender = "male";
-      const response = await fetch('http://localhost:5000/speak', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, gender })
-      });
-      const data = await response.json();
-      const audioData = data.speech;
-      const binary = atob(audioData);
-      const array = new Uint8Array(binary.length);
-      for (let i = 0; i < binary.length; i++) {
-        array[i] = binary.charCodeAt(i);
-      }
-      const blob = new Blob([array], { type: 'audio/wav' });
-      const url = URL.createObjectURL(blob);
-      document.getElementById('audio').src = url;
-    }
-  </script>
+  <div class="headbar">
+    <div class="headbar-bg">
+      <span id="app-title">Bahnar Text-To-Speech</span>
+    </div>
+    <select class="lang-select" id="lang-select" onchange="changeLang()">
+      <option value="en">English</option>
+      <option value="vi">Tiếng Việt</option>
+    </select>
+  </div>
+  <div class="main-columns">
+    <div class="left-col">
+      <div class="nav-bar-group">
+        <div class="func-nav">
+          <button class="func-nav-btn active" id="nav-text-btn" onclick="switchFuncTab('text')">
+            <span id="nav-text-label">Text-to-speech</span>
+          </button>
+          <button class="func-nav-btn" id="nav-picture-btn" onclick="switchFuncTab('picture')">
+            <span id="nav-picture-label">Image-to-speech</span>
+          </button>
+        </div>
+      </div>
+      <div class="center-group">
+        <div class="tts-card" id="text-func-group">
+          <label class="tts-label" id="text-label" for="text">Enter text here</label>
+          <textarea id="text" placeholder="Enter text here" oninput="autoGrow(this)"></textarea>
+          <div class="btn-group">
+            <button class="tts-btn" id="speak-btn" onclick="speak()">
+              <span id="speak-btn-text">Speak</span>
+            </button>
+            <label class="tts-btn" style="padding: 0 18px; cursor: pointer;">
+              <input type="file" id="file-upload" accept=".txt,.docx" style="display:none" onchange="uploadTextFile(event)">
+              <span id="upload-btn-text">Upload Text File</span>
+            </label>
+            <span style="align-self:center; margin-left:8px; color:#2563eb; font-size:0.98em;">
+              .txt, .docx
+            </span>
+          </div>
+          <audio id="audio"></audio>
+        </div>
+        <div class="tts-card" id="picture-func-group" style="display:none;">
+          <div id="image-drop-area" class="image-drop-area">
+            <div class="image-drop-icon">&#128247;</div>
+            <div class="image-drop-msg" id="image-drop-msg">Drag and drop an image here</div>
+          </div>
+          <textarea id="ocr-result" class="ocr-result" placeholder="OCR result will appear here" readonly></textarea>
+          <div class="btn-group">
+            <button class="tts-btn" id="speak-ocr-btn" onclick="speakOcr()" disabled>
+              <span id="speak-ocr-btn-text">Speak</span>
+            </button>
+            <label class="tts-btn" style="padding: 0 18px; cursor: pointer;">
+              <input type="file" id="image-upload" accept="image/*" style="display:none" onchange="handleImageUpload(event)">
+              <span id="upload-image-btn-text">Upload Image</span>
+            </label>
+          </div>
+          <audio id="ocr-audio"></audio>
+        </div>
+      </div>
+    </div>
+    <div class="right-col">
+      <div class="history-card">
+        <div class="history-title" id="history-title">History</div>
+        <div id="history-list"></div>
+      </div>
+      <div class="credit-info">
+        <div class="credit-main">Unlimited Research Group of AI, HCMUT 2025 &copy;</div>
+        <div class="credit-desc">This project is developed by Unlimited Research Group of AI, Ho Chi Minh City University of Technology. All rights reserved.</div>
+      </div>
+    </div>
+  </div>
+  <script src="mammoth.browser.min.js"></script>
+  <script src="main.js"></script>
+  <script src="ocr.js"></script>
 </body>
 </html>

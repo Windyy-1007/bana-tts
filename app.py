@@ -8,7 +8,7 @@ import base64
 import torch
 from flask_cors import CORS
 
-app = Flask(__name__, static_folder="front-end")
+app = Flask(__name__, static_folder="front-end", static_url_path="")
 CORS(app)
 
 config = AudioConfig()
@@ -57,9 +57,9 @@ def speak():
     response = make_response({"speech": audio_data})
     return response
 
-@app.route('/')
-def index():
-    return app.send_static_file('index.html')
+@app.route("/")
+def root():
+    return app.send_static_file("index.html")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
