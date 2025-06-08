@@ -301,10 +301,20 @@ body {
   border-bottom: 3px solid transparent;
   position: relative;
 }
+.underline {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background-color: #2563eb;  
+  border-radius: 16px 16px 0 0;
+  transition: left 0.3s ease, width 0.3s ease;  
+  width: 0;  
+  z-index: 0;
+}
 .func-nav-btn.active, .func-nav-btn:focus {
   background: #f8fafc;
   color: #2563eb;
-  border-bottom: 3px solid #2563eb;
 }
 .func-nav-btn:not(:last-child) {
   border-right: 1.5px solid #e5e7eb;
