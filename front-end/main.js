@@ -103,35 +103,61 @@ function setSpeakLoading(loading) {
   }
 }
 
+function setUploadLoading(loading) {
+  const uploadLabel = document.querySelector('label[for="file-upload"]') || document.querySelector('#file-upload').parentElement;
+  const uploadBtnText = document.getElementById('upload-btn-text');
+  if (loading) {
+    uploadLabel.classList.add('disabled');
+    uploadBtnText.innerHTML = '<span class="spinner"></span>';
+  } else {
+    uploadLabel.classList.remove('disabled');
+    uploadBtnText.innerText = dict[currentLang].upload;
+  }
+}
+
 function uploadTextFile(event) {
   const file = event.target.files[0];
   if (!file) return;
+  setUploadLoading(true);
   const ext = file.name.split('.').pop().toLowerCase();
   if (ext === "txt") {
     const reader = new FileReader();
     reader.onload = function(e) {
       document.getElementById('text').value = e.target.result;
       autoGrow(document.getElementById('text'));
+      setUploadLoading(false);
+    };
+    reader.onerror = function() {
+      alert('Failed to read .txt file.');
+      setUploadLoading(false);
     };
     reader.readAsText(file, 'UTF-8');
   } else if (ext === "docx") {
     // Requires mammoth.browser.min.js included in HTML
     const reader = new FileReader();
     reader.onload = function(e) {
-      mammoth.extractRawText({arrayBuffer: e.target.result})
+      mammoth.convertToText({arrayBuffer: e.target.result})
         .then(function(result){
           document.getElementById('text').value = result.value;
           autoGrow(document.getElementById('text'));
+          setUploadLoading(false);
         })
         .catch(function(err){
           alert('Failed to read .docx file.');
+          setUploadLoading(false);
         });
+    };
+    reader.onerror = function() {
+      alert('Failed to read .docx file.');
+      setUploadLoading(false);
     };
     reader.readAsArrayBuffer(file);
   } else if (ext === "doc") {
     alert('Reading .doc files is not supported. Please use .txt or .docx.');
+    setUploadLoading(false);
   } else {
     alert('Please upload a .txt, .doc, or .docx file.');
+    setUploadLoading(false);
   }
   // Reset file input so same file can be uploaded again if needed
   event.target.value = '';
