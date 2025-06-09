@@ -192,15 +192,38 @@ function switchFuncTab(tab) {
   const picGroup = document.getElementById('picture-func-group');
   const navText = document.getElementById('nav-text-btn');
   const navPic = document.getElementById('nav-picture-btn');
+  const underline = document.querySelector('.underline'); 
+  let activeBtn;
+
   if (tab === 'text') {
     textGroup.style.display = '';
     picGroup.style.display = 'none';
     navText.classList.add('active');
     navPic.classList.remove('active');
+    activeBtn = navText;
   } else {
     textGroup.style.display = 'none';
     picGroup.style.display = '';
     navText.classList.remove('active');
     navPic.classList.add('active');
+    activeBtn = navPic;
+  }
+
+  
+  if (activeBtn && underline) {
+    const parentRect = activeBtn.parentElement.getBoundingClientRect();
+    const btnRect = activeBtn.getBoundingClientRect();
+
+    const leftPos = btnRect.left - parentRect.left;
+    const width = btnRect.width;
+
+    underline.style.left = leftPos + 'px';
+    underline.style.width = width + 'px';
   }
 }
+
+
+window.onload = () => {
+  switchFuncTab('text');
+};
+
