@@ -118,8 +118,10 @@ function setUploadLoading(loading) {
 function uploadTextFile(event) {
   const file = event.target.files[0];
   if (!file) return;
+  
   setUploadLoading(true);
   const ext = file.name.split('.').pop().toLowerCase();
+  
   if (ext === "txt") {
     const reader = new FileReader();
     reader.onload = function(e) {
@@ -133,17 +135,28 @@ function uploadTextFile(event) {
     };
     reader.readAsText(file, 'UTF-8');
   } else if (ext === "docx") {
-    // Requires mammoth.browser.min.js included in HTML
+    // Check if mammoth is loaded
+    if (typeof mammoth === 'undefined') {
+      alert('Document processing library not loaded. Please refresh the page and try again.');
+      setUploadLoading(false);
+      return;
+    }
+    
     const reader = new FileReader();
     reader.onload = function(e) {
-      mammoth.convertToText({arrayBuffer: e.target.result})
+      mammoth.extractRawText({arrayBuffer: e.target.result})
         .then(function(result){
-          document.getElementById('text').value = result.value;
-          autoGrow(document.getElementById('text'));
+          if (result.value && result.value.trim()) {
+            document.getElementById('text').value = result.value;
+            autoGrow(document.getElementById('text'));
+          } else {
+            alert('No text found in the .docx file or the file may be corrupted.');
+          }
           setUploadLoading(false);
         })
         .catch(function(err){
-          alert('Failed to read .docx file.');
+          console.error('Mammoth error:', err);
+          alert('Failed to read .docx file. The file may be corrupted or incompatible.');
           setUploadLoading(false);
         });
     };
@@ -152,11 +165,8 @@ function uploadTextFile(event) {
       setUploadLoading(false);
     };
     reader.readAsArrayBuffer(file);
-  } else if (ext === "doc") {
-    alert('Reading .doc files is not supported. Please use .txt or .docx.');
-    setUploadLoading(false);
   } else {
-    alert('Please upload a .txt, .doc, or .docx file.');
+    alert('Please upload a .txt or .docx file.');
     setUploadLoading(false);
   }
   // Reset file input so same file can be uploaded again if needed
