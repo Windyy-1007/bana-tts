@@ -213,28 +213,9 @@ function renderHistory() {
   });
 }
 
-function switchFuncTab(tab) {
-  const textGroup = document.getElementById('text-func-group');
-  const picGroup = document.getElementById('picture-func-group');
-  const navText = document.getElementById('nav-text-btn');
-  const navPic = document.getElementById('nav-picture-btn');
-  const underline = document.querySelector('.underline'); 
-  let activeBtn;
-
-  if (tab === 'text') {
-    textGroup.style.display = '';
-    picGroup.style.display = 'none';
-    navText.classList.add('active');
-    navPic.classList.remove('active');
-    activeBtn = navText;
-  } else {
-    textGroup.style.display = 'none';
-    picGroup.style.display = '';
-    navText.classList.remove('active');
-    navPic.classList.add('active');
-    activeBtn = navPic;
-  }
-
+function updateUnderlinePosition() {
+  const activeBtn = document.querySelector('.func-nav-btn.active');
+  const underline = document.querySelector('.underline');
   
   if (activeBtn && underline) {
     const parentRect = activeBtn.parentElement.getBoundingClientRect();
@@ -248,8 +229,34 @@ function switchFuncTab(tab) {
   }
 }
 
+function switchFuncTab(tab) {
+  const textGroup = document.getElementById('text-func-group');
+  const picGroup = document.getElementById('picture-func-group');
+  const navText = document.getElementById('nav-text-btn');
+  const navPic = document.getElementById('nav-picture-btn');
+
+  if (tab === 'text') {
+    textGroup.style.display = '';
+    picGroup.style.display = 'none';
+    navText.classList.add('active');
+    navPic.classList.remove('active');
+  } else {
+    textGroup.style.display = 'none';
+    picGroup.style.display = '';
+    navText.classList.remove('active');
+    navPic.classList.add('active');
+  }
+
+  // Update underline position after DOM changes
+  setTimeout(updateUnderlinePosition, 0);
+}
 
 window.onload = () => {
   switchFuncTab('text');
+  
+  // Add resize listener to fix underline position on screen size changes
+  window.addEventListener('resize', () => {
+    updateUnderlinePosition();
+  });
 };
 
