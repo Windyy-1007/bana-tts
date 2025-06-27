@@ -384,17 +384,17 @@ body {
   box-sizing: border-box;
 }
 
-/* TTS Card Header */
-.tts-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 18px;
+/* Text Input Container */
+.text-input-container {
+  position: relative;
   width: 100%;
 }
 
 /* Guide Toggle Button */
 .guide-toggle-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
   width: 32px;
   height: 32px;
   border: none;
@@ -404,12 +404,12 @@ body {
   font-size: 18px;
   font-weight: bold;
   cursor: pointer;
+  z-index: 5;
   display: none;
   align-items: center;
   justify-content: center;
   box-shadow: 0 2px 8px rgba(37,99,235,0.3);
   transition: all 0.2s ease;
-  flex-shrink: 0;
 }
 
 .guide-toggle-btn:hover {

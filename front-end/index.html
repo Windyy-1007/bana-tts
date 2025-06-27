@@ -52,13 +52,13 @@
       </div>
       <div class="center-group">
         <div class="tts-card" id="text-func-group">
-          <label class="tts-label" id="text-label" for="text">Enter text here</label>
-          <div class="text-input-container">
+          <div class="tts-card-header">
+            <label class="tts-label" id="text-label" for="text">Enter text here</label>
             <button class="guide-toggle-btn" id="guide-toggle-btn" onclick="toggleGuide()" title="Typing Guide">
               <span class="guide-icon">?</span>
             </button>
-            <textarea id="text" placeholder="Enter text here" oninput="autoGrow(this)"></textarea>
           </div>
+          <textarea id="text" placeholder="Enter text here" oninput="autoGrow(this)"></textarea>
           <div class="btn-group">
             <button class="tts-btn" id="speak-btn" onclick="speak()">
               <span id="speak-btn-text">Speak</span>
