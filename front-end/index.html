@@ -53,7 +53,12 @@
       <div class="center-group">
         <div class="tts-card" id="text-func-group">
           <label class="tts-label" id="text-label" for="text">Enter text here</label>
-          <textarea id="text" placeholder="Enter text here" oninput="autoGrow(this)"></textarea>
+          <div class="text-input-container">
+            <button class="guide-toggle-btn" id="guide-toggle-btn" onclick="toggleGuide()" title="Typing Guide">
+              <span class="guide-icon">?</span>
+            </button>
+            <textarea id="text" placeholder="Enter text here" oninput="autoGrow(this)"></textarea>
+          </div>
           <div class="btn-group">
             <button class="tts-btn" id="speak-btn" onclick="speak()">
               <span id="speak-btn-text">Speak</span>
@@ -84,6 +89,44 @@
             </label>
           </div>
           <audio id="ocr-audio"></audio>
+        </div>
+        
+        <!-- Typing Guide Box -->
+        <div class="guide-backdrop" id="guide-backdrop"></div>
+        <div class="guide-card" id="guide-card">
+          <div class="guide-header">
+            <div class="guide-title" id="guide-title">Typing Guide</div>
+            <button class="guide-close-btn" onclick="toggleGuide()" title="Close">×</button>
+          </div>
+          <div class="guide-content">
+            <div class="guide-section">
+              <div class="guide-subtitle" id="guide-special-chars">Special Characters:</div>
+              <div class="guide-items">
+                <div class="guide-item"><span class="guide-key">u8, uu, u\</span> → <span class="guide-result">ŭ</span></div>
+                <div class="guide-item"><span class="guide-key">c6, cc, c\</span> → <span class="guide-result">ĉ</span></div>
+                <div class="guide-item"><span class="guide-key">e8, ew, e\</span> → <span class="guide-result">ĕ</span></div>
+                <div class="guide-item"><span class="guide-key">i8, iw, i\</span> → <span class="guide-result">ĭ</span></div>
+                <div class="guide-item"><span class="guide-key">n4, nx, n\</span> → <span class="guide-result">ñ</span></div>
+                <div class="guide-item"><span class="guide-key">o8, o\</span> → <span class="guide-result">ǒ</span></div>
+                <div class="guide-item"><span class="guide-key">aw, a8</span> → <span class="guide-result">ă</span></div>
+                <div class="guide-item"><span class="guide-key">aa, a6</span> → <span class="guide-result">â</span></div>
+                <div class="guide-item"><span class="guide-key">dd, d9</span> → <span class="guide-result">đ</span></div>
+                <div class="guide-item"><span class="guide-key">ee, e6</span> → <span class="guide-result">ê</span></div>
+                <div class="guide-item"><span class="guide-key">oo, o6</span> → <span class="guide-result">ô</span></div>
+                <div class="guide-item"><span class="guide-key">ow, o7</span> → <span class="guide-result">ơ</span></div>
+                <div class="guide-item"><span class="guide-key">uw, u7</span> → <span class="guide-result">ư</span></div>
+              </div>
+            </div>
+            <div class="guide-section">
+              <div class="guide-subtitle" id="guide-tips">Tips:</div>
+              <div class="guide-tips">
+                <div class="guide-tip" id="guide-tip-1">• Case doesn't matter for 2nd character (Uu → Ŭ)</div>
+                <div class="guide-tip" id="guide-tip-2">• Repeat same character to cancel (e66 → e6)</div>
+                <div class="guide-tip" id="guide-tip-3">• Type naturally - replacement happens instantly</div>
+                <div class="guide-tip" id="guide-tip-4">• Turn off Unikey on laptop/PC or switch to English keyboard on phone</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
