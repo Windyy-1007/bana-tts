@@ -1,74 +1,110 @@
-<p align="center">
-    <img src="resources/reverse-diffusion.gif" alt="drawing" width="500"/>
-</p>
+## ## Description
 
+Bahnar Text-to-Speech is a project that turns written words—or text captured from images—into clear, natural-sounding Bahnar speech. Type a sentence or drop in a picture, and the project instantly reads the content aloud, saves each reading for later, and helps promote everyday use of the Bahnar language.
+## Prerequisites
 
-# Grad-TTS
+### 1 Install required tools
 
-Official implementation of the Grad-TTS model based on Diffusion Probabilistic Modelling. For all details check out our paper accepted to ICML 2021 via [this](https://arxiv.org/abs/2105.06337) link.
+- **Git** – to clone the source code.
+    
+- **Docker Desktop / Docker Engine** – to build and run the container.
+    
+- **Windows Subsystem for Linux 2 (WSL2)** – the backend Docker Desktop uses on Windows (enable it via `wsl --install`).
+    
+- **Python ≥ 3.8** _(optional)_ – only needed if you want to run CLI commands or develop outside Docker.
 
-**Authors**: Vadim Popov\*, Ivan Vovk\*, Vladimir Gogoryan, Tasnima Sadekova, Mikhail Kudinov.
-
-<sup>\*Equal contribution.</sup>
-
-## Abstract
-
-**Demo page** with voiced abstract: [link](https://grad-tts.github.io/).
-
-Recently, denoising diffusion probabilistic models and generative score matching have shown high potential in modelling complex data distributions while stochastic calculus has provided a unified point of view on these techniques allowing for flexible inference schemes. In this paper we introduce Grad-TTS, a novel text-to-speech model with score-based decoder producing mel-spectrograms by gradually transforming noise predicted by encoder and aligned with text input by means of Monotonic Alignment Search. The framework of stochastic differential equations helps us to generalize conventional diffusion probabilistic models to the case of reconstructing data from noise with different parameters and allows to make this reconstruction flexible by explicitly controlling trade-off between sound quality and inference speed. Subjective human evaluation shows that Grad-TTS is competitive with state-of-the-art text-to-speech approaches in terms of Mean Opinion Score.
-
-## Installation
-
-Firstly, install all Python package requirements:
+### 2 Clone the repository
 
 ```bash
-pip install -r requirements.txt
+git clone https://github.com/<your-org>/<your-repo>.git
+cd <your-repo>
 ```
 
-Secondly, build `monotonic_align` code (Cython):
+### 3 Download pretrained model checkpoints
+
+1. Download **Grad‑TTS** and **HiFi‑GAN** checkpoints (trained on LJSpeech & Libri‑TTS, 22 kHz) from **[here](https://drive.google.com/drive/folders/1grsfccJbmEuSBGQExQKr3cVxNV0xEOZ7)**.
+    
+2. In the **existing** `checkpts/` directory (already present in the repo and containing `hifigan-config.json`), **move `hifigan.pt` into this folder**.
+    
+3. Inside `checkpts/`, create a sub‑folder `grad/`, move **grad‑tts.pt** there, and **rename it to `grad_1344.pt`** so the final layout looks like:
+    
+    ```
+    checkpts/
+    ├── hifigan-config.json
+    ├── hifigan.pt
+    └── grad/
+        └── grad_1344.pt
+    ```
+    
+### 4 Prepare Dockerfile 
+
+If the repo does not already contain them, create a **Dockerfile** in the project root:
+
+```Dockerfile
+# --- Dockerfile ---
+FROM continuumio/miniconda3
+
+# Set working directory
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y libsndfile1
+
+# Copy environment.yml
+
+COPY environment.yml .
+
+# Create the conda environment
+
+RUN conda env create -f environment.yml
+
+# Activate the environment and set it as default
+
+SHELL ["conda", "run", "-n", "nmt", "/bin/bash", "-c"]
+
+# Copy your code
+
+COPY . .
+
+# Set the default command (replace app.py with your entry point)
+
+CMD ["conda", "run", "-n", "nmt", "python", "app.py"]
+```
+
+### 5 Build the Docker image
 
 ```bash
-cd model/monotonic_align; python setup.py build_ext --inplace; cd ../..
+docker build -t your-image-name .
 ```
 
-**Note**: code is tested on Python==3.6.9.
+- `your-image-name`: any tag to identify the image.
+    
+- The dot (`.`) tells Docker to use the current directory as the build context.
+    
 
-## Inference
+### 6 Run the container
 
-You can download Grad-TTS and HiFi-GAN checkpoints trained on LJSpeech* and Libri-TTS datasets (22kHz) from [here](https://drive.google.com/drive/folders/1grsfccJbmEuSBGQExQKr3cVxNV0xEOZ7?usp=sharing).
+```
+docker run --rm -p hostPort:containerPort your-image-name
+```
 
-***Note**: we open-source 2 checkpoints of Grad-TTS trained on LJSpeech. They are the same models but trained with different positional encoding scale: **x1** (`"grad-tts-old.pt"`, ICML 2021 sumbission model) and **x1000** (`"grad-tts.pt"`). To use the former set `params.pe_scale=1` and to use the latter set `params.pe_scale=1000`. Libri-TTS checkpoint was trained with scale **x1000**.
+- `-p hostPort:containerPort`: maps an available **hostPort** on your machine to the **containerPort** your app listens on (e.g. `5000:5000`).
+    
+- `--rm`: automatically removes the container when you stop it. 
+    
 
-Put necessary Grad-TTS and HiFi-GAN checkpoints into `checkpts` folder in root Grad-TTS directory (note: in `inference.py` you can change default HiFi-GAN path).
+### 7 Open your browser
 
-1. Create text file with sentences you want to synthesize like `resources/filelists/synthesis.txt`.
-2. For single speaker set `params.n_spks=1` and for multispeaker (Libri-TTS) inference set `params.n_spks=247`.
-3. Run script `inference.py` by providing path to the text file, path to the Grad-TTS checkpoint, number of iterations to be used for reverse diffusion (default: 10) and speaker id if you want to perform multispeaker inference:
-    ```bash
-    python inference.py -f <your-text-file> -c <grad-tts-checkpoint> -t <number-of-timesteps> -s <speaker-id-if-multispeaker>
-    ```
-4. Check out folder called `out` for generated audios.
+Open **http://localhost****:** in your browser — replace `<hostPort>` with the value you used in `docker run -p hostPort:containerPort`.
 
-You can also perform *interactive inference* by running Jupyter Notebook `inference.ipynb` or by using our [Google Colab Demo](https://colab.research.google.com/drive/1YNrXtkJQKcYDmIYJeyX8s5eXxB4zgpZI?usp=sharing).
+- _Example:_ if you ran `docker run -p 5000:5000 ...`, navigate to http://localhost:5000.
 
-## Training
+## Usage Explanation:
 
-1. Make filelists of your audio data like ones included into `resources/filelists` folder. For single speaker training refer to `jspeech` filelists and to `libri-tts` filelists for multispeaker.
-2. Set experiment configuration in `params.py` file.
-3. Specify your GPU device and run training script:
-    ```bash
-    export CUDA_VISIBLE_DEVICES=YOUR_GPU_ID
-    python train.py  # if single speaker
-    python train_multi_speaker.py  # if multispeaker
-    ```
-4. To track your training process run tensorboard server on any available port:
-    ```bash
-    tensorboard --logdir=YOUR_LOG_DIR --port=8888
-    ```
-    During training all logging information and checkpoints are stored in `YOUR_LOG_DIR`, which you can specify in `params.py` before training.
+To use the Bahnar Text-To-Speech web application, open the localhost site. The interface includes two main functionalities: text-to-speech and image-to-speech. 
 
-## References
+In the Text-to-speech tab, users can enter text manually into the textbox or upload a .txt file using the “Upload Text File” button. After inputting the text, clicking the “Speak” button will generate and play the synthesized speech, while also saving the request to the history panel on the right.
 
-* HiFi-GAN model is used as vocoder, official github repository: [link](https://github.com/jik876/hifi-gan).
-* Monotonic Alignment Search algorithm is used for unsupervised duration modelling, official github repository: [link](https://github.com/jaywalnut310/glow-tts).
-* Phonemization utilizes CMUdict, official github repository: [link](https://github.com/cmusphinx/cmudict).
+In the Image-to-speech tab, users can drag and drop an image or use the “Upload Image” button to select an image from their device. The system will extract any text from the image and display it in the textbox. The user can then click “Speak” to convert the extracted text to speech. 
+
+Additionally, a language selector is available in the top right corner, allowing users to switch the interface language between English and Vietnamese.
