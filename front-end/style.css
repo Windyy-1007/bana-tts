@@ -180,6 +180,18 @@ body {
 .left-col {
   border-right: 1.5px solid #e5e7eb;
   align-items: stretch;
+  overflow: auto;
+  scrollbar-width: none;
+}
+.left-col:hover{
+  scrollbar-width: thin;
+}
+.left-col::-webkit-scrollbar {
+  width: 0px;
+  transition: width 0.3s;
+}
+.left-col:hover::-webkit-scrollbar {
+  width: 6px;
 }
 .right-col {
   background: #f8fafc;
