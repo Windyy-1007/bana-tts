@@ -3,7 +3,11 @@ FROM continuumio/miniconda3
 # Set working directory
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y libsndfile1
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    libsndfile1 \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy environment.yml
 COPY environment.yml .
@@ -17,5 +21,12 @@ SHELL ["conda", "run", "-n", "nmt", "/bin/bash", "-c"]
 # Copy your code
 COPY . .
 
-# Set the default command (replace app.py with your entry point)
+# Expose the port that Flask runs on
+EXPOSE 5000
+
+# Add health check
+HEALTHCHECK --interval=30s --timeout=30s --start-period=40s --retries=3 \
+  CMD curl -f http://localhost:5000/ || exit 1
+
+# Set the default command
 CMD ["conda", "run", "-n", "nmt", "python", "app.py"]
